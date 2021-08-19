@@ -20,7 +20,7 @@ class User extends Authenticatable
     protected $guarded = ['id'];
 
     public function role(){
-       return $this->belongsTo(Role::class);
+       return $this->hasOneThrough(Role::class, UserRole::class, 'user_id', 'id', 'id', 'role_id');
     }
 
     public function permissions() {
@@ -39,4 +39,12 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
     ];
+
+    public function isInfluencer() {
+        return $this->is_influencer === 1;
+    }
+
+    public function isAdmin() {
+        return $this->is_influencer === 0;
+    }
 }

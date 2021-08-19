@@ -1,18 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\UpdatePasswordRequest;
-use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Requests\UserStoreRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
 
-class UserController extends Controller
+class UserController
 {
     /**
      * Display a listing of the resource.
@@ -93,47 +90,6 @@ class UserController extends Controller
         Gate::authorize('edit', 'users');
         User::destroy($id);
         return response([], Response::HTTP_NO_CONTENT);
-    }
-
-    public function user()
-    {
-        $user = Auth::user();
-        return response((new UserResource($user))->additional([
-            'data' => [
-                'permissions' => $user->permissions()
-            ]
-        ]), Response::HTTP_OK);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function user_update(UpdateProfileRequest $request)
-    {
-        $user = Auth::user();
-
-        $user->update($request->only(
-            'first_name',
-            'last_name',
-            'email',
-        ));
-
-        return response(new UserResource($user), Response::HTTP_ACCEPTED);
-    }
-
-    public function user_password(UpdatePasswordRequest $request)
-    {
-        $user = Auth::user();
-
-        $user->update([
-            'password' => bcrypt($request->password)
-        ]);
-
-        return response(new UserResource($user), Response::HTTP_ACCEPTED);
     }
 
 }

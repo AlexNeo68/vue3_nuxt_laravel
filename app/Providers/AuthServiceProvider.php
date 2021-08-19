@@ -27,6 +27,11 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
+        Passport::tokensCan([
+            'admin' => 'Admin user',
+            'influencer' => 'Influencer user',
+        ]);
+
         Passport::routes();
 
         Gate::define('view', function(User $user, $model){
